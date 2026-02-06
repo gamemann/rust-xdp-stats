@@ -2,7 +2,7 @@ A small project that utilizes an awesome Rust library called [Aya](https://aya-r
 
 ![Preview](./images/preview.gif)
 
-The XDP program simply increments counters for total packets and bytes using a per CPU array map and displays the total counters inside of the user-space program.
+The XDP program simply increments counters for total packets and bytes using a per CPU array map and displays the total counters inside of the user-space program. There is a `matched` stat which is only incremented when packets arrive on UDP port [`TARGET_PORT`](https://github.com/gamemann/rust-xdp-stats/blob/main/rust-xdp-stats-common/src/config.rs#L4) (default: `8080`).
 
 ⚠️ At this time, this project does not include all features from my original XDP Stats program in C. The following features are missing, but will be added in the future!
 
