@@ -4,7 +4,7 @@ A small project that utilizes an awesome Rust library called [Aya](https://aya-r
 
 The XDP program simply increments counters for total packets and bytes using a per CPU array map and displays the total counters inside of the user-space program.
 
-At this time, this project does not include all features from my original XDP Stats program in C. The following features are missing, but will be added in the future!
+⚠️ At this time, this project does not include all features from my original XDP Stats program in C. The following features are missing, but will be added in the future!
 
 * AF_XDP socket support
 * Redirect/XDP_TX support (with FIB lookup)
@@ -80,6 +80,28 @@ The following command line options are supported.
 | `-s --skb` | - | If set, attempts to load the XDP program in SKB mode which is slower, but more compatible. |
 | `-o --offload` | - | If set, attempts to offload the XDP program to the NIC hardware (only certain NICs support this). |
 | `-z --replace` | - | If set, passes the `REPLACE` flag when attaching the XDP program which replaces the XDP program if it is already loaded. For some reason this results in a crash. Otherwise it would be set by default. |
+
+## Additional Configuration
+There are constants you may change in the [`rust-xdp-stats-common/src/config.rs`](https://github.com/gamemann/rust-xdp-stats/blob/main/rust-xdp-stats-common/src/config.rs) file. You will need to rebuild the tool after changing these values.
+
+```rust
+/* CONFIG OPTIONS */
+/* -------------------------------- */
+// The target UDP Port to match packets on.
+pub const TARGET_PORT: u16 = 8080;
+
+// If enabled, redirects packets to AF_XDP sockets.
+pub const REDIRECT: bool = true;
+
+// If enabled, performs a FIB lookup and sets next MAC address before redirecting packet via XDP_TX.
+pub const REDIRECT_FIB_LOOKUP: bool = false;
+
+// The path to the ELF file to load with eBPF.
+// Relative to $OUT_DIR env var, but you shouldn't need to change this.
+pub const PATH_ELF_FILE: &str = "rust-xdp-stats";
+/* -------------------------------- */
+/* CONFIG OPTIONS END */
+```
 
 ## Credits
 * [Christian Deacon](https://github.com/gamemann)
