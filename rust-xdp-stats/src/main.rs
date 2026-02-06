@@ -92,7 +92,8 @@ async fn main() -> Result<()> {
     let mut attach_flags = match (skb, offload) {
         (true, false) => XdpFlags::SKB_MODE,
         (false, true) => XdpFlags::HW_MODE,
-        _ => XdpFlags::default(),
+        _ => XdpFlags::default(), // XdpFlags::default() attaches using DRV mode from my testing.
+                                  // If it won't load with DRV mode, you could try XdpFlags::DRV_MODE directly.
     };
 
     // Apply the replace flag if wanted.
