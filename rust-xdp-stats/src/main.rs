@@ -50,12 +50,13 @@ async fn main() -> Result<()> {
 
     // If we don't have any interfaces, we can try eth0, but warn.
     if ifaces.is_empty() {
-        warn!("no interfaces specified, attempting to use 'eth0'");
+        warn!("No interfaces specified, attempting to use 'eth0'...");
 
         ifaces.push("eth0".to_string());
     }
 
     // We need to set up our log environment now.
+    // We use info by default.
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
 
     // We need to raise the RLimit for older kernels.
@@ -67,6 +68,8 @@ async fn main() -> Result<()> {
     // We need to load our eBPF program before attaching it to the interface(s).
     let mut bpf_prog = load_bpf().expect("Failed to load BPF object file");
 
+    // We need to set up our eBPF logger which is needed for using logging functions in BPF.
+    // We currently do not use any logging in BPF unless for debug purposes (development).
     match EbpfLogger::init(&mut bpf_prog) {
         Err(_) => {} // We don't care for logging since we don't log directly in BPF by default (only when debugging).
         Ok(logger) => {
@@ -96,6 +99,7 @@ async fn main() -> Result<()> {
     // This would be ideal by default, but
     // For some reason this causes a panic with:
     // called `Option::unwrap()` on a `None` value
+    // When attaching below
     if replace {
         attach_flags |= XdpFlags::REPLACE;
     }
